@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Needed for the ADFS redirect URI to function
+    'django_auth_adfs',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +49,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # With this you can force a user to login without using
+    # the LoginRequiredMixin on every view class
+    #
+    # You can specify URLs for which login is not enforced by
+    # specifying them in the LOGIN_EXEMPT_URLS setting.
+    'django_auth_adfs.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -121,3 +129,32 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTHENTICATION_BACKENDS = (
+    'django_auth_adfs.backend.AdfsAuthCodeBackend',
+)
+
+
+
+CLIENT_ID = '4e6dd94f-60c0-4bba-bd02-a65cf7578e40'
+CLIENT_SECRET = 'i.g8Q~Sf2xEcB59uqQaPm3osfGHIOGgyPSGsIcF7'
+TENANT_ID = 'a2a41b14-186e-4ff1-8bc6-51ec43df1039'
+
+
+AUTH_ADFS = {
+    'AUDIENCE': CLIENT_ID,
+    'CLIENT_ID': CLIENT_ID,
+    'CLIENT_SECRET': CLIENT_SECRET,
+    'CLAIM_MAPPING': {'first_name': 'given_name',
+                      'last_name': 'family_name',
+                      'email': 'upn'},
+    'GROUPS_CLAIM': 'roles',
+    'MIRROR_GROUPS': True,
+    'USERNAME_CLAIM': 'upn',
+    'TENANT_ID': TENANT_ID,
+    'RELYING_PARTY_ID': CLIENT_ID,
+}
+
+# Configure django to redirect users to the right URL for login
+LOGIN_URL = "django_auth_adfs:login"
+LOGIN_REDIRECT_URL = "/"
