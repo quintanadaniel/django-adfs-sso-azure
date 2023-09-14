@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "authentications",
     # Needed for the ADFS redirect URI to function
     'django_auth_adfs',
 ]
@@ -140,6 +141,9 @@ CLIENT_ID = '4e6dd94f-60c0-4bba-bd02-a65cf7578e40'
 CLIENT_SECRET = 'i.g8Q~Sf2xEcB59uqQaPm3osfGHIOGgyPSGsIcF7'
 TENANT_ID = 'a2a41b14-186e-4ff1-8bc6-51ec43df1039'
 
+AD_URL = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token?"
+SCOPE = "https://graph.microsoft.com/.default"
+GRAPH_MICROSOFT_USERS_URL = 'https://graph.microsoft.com/v1.0/users/'
 
 AUTH_ADFS = {
     'AUDIENCE': CLIENT_ID,
